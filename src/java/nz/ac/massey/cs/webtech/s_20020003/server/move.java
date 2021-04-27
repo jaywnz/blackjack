@@ -36,7 +36,7 @@ public class move extends HttpServlet {
         HttpSession session = request.getSession(false);
         
         if (session == null) {
-            System.out.println("No session in progress.");
+            System.out.println("No game in progress.");
             response.setStatus(404);
             try (PrintWriter out = response.getWriter()) {
                 out.println("<!DOCTYPE html>");
@@ -56,47 +56,92 @@ public class move extends HttpServlet {
         
         // retrieve session variables
         ArrayList<Object> userHand = (ArrayList<Object>) session.getAttribute("userHand");
+        ArrayList<Object> dealerHand = (ArrayList<Object>) session.getAttribute("dealerHand");
         cards.Deck deck = (cards.Deck) session.getAttribute("deck");
         Object whoseTurn = session.getAttribute("whoseTurn");
-        Object userHandTotal = session.getAttribute("userHandTotal");
+        int userHandTotal = (int) session.getAttribute("userHandTotal");
+        int dealerHandTotal = (int) session.getAttribute("dealerHandTotal");
         
         // check if dealer's turn
         if (whoseTurn.equals(1)) {
+            System.out.println("It is not the user's turn.");
             response.setStatus(400);
             return;
         }
         
         // check if user bust
         if ((int)userHandTotal > 21) {
+            System.out.println("User is bust.");
             response.setStatus(400);
+            try (PrintWriter out = response.getWriter()) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Blackjack</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>400 Bad Request</h1>");
+                out.println("<p>You are bust!</p>");
+                out.println("<a href='/assignment2_server_20020003/jack/start'>Start a new game</a>.");
+                out.println("</body>");
+                out.println("</html>");
+            }
             return;
         }
         
         // check servlet path for move type
         String servletPath = request.getServletPath();
+        
+        // user chooses hit
         if ("/jack/move/hit".equals(servletPath)) {
-            System.out.println("Hit...");
-            userHand.add(deck.dealTopCard());
-            System.out.println(userHand);
+            System.out.println("Hitting...");
+            userHand.add(0, deck.dealTopCard());
+            System.out.println("userHand: " + userHand);
+            // add hit to user total
+            cards.Card lastUserCard = (cards.Card) userHand.get(0);          
+            userHandTotal += lastUserCard.getValue().getNum();
+            System.out.println("Total: " + userHandTotal);
+            session.setAttribute("userHandTotal", userHandTotal);
         }
         
+        // user chooses stand
         if ("/jack/move/stand".equals(servletPath)) {
-            System.out.println("Stand...");
-            // change whoseTurn
-            session.setAttribute("whoseTurn", 1);
-            // deal entire hand for dealer
-            // hit if total <=17
-               // possible while loop here
+            System.out.println("Standing...");
             
+            // adjust user total for aces
+            for (Object i : userHand) {
+                cards.Card c = (cards.Card) i;
+                // TODO deal with case where user has 21 already, e.g., A A 9
+                if (c.getValue().getAbbr().equals("A") && (userHandTotal + 10) <= 21) {
+                    userHandTotal += 10;
+                }
+            }
+            session.setAttribute("userHandTotal", userHandTotal);
+            System.out.println("User stands with: " + userHandTotal);
+            
+            // change turn to dealer
+            session.setAttribute("whoseTurn", 1);
+            
+            // deal entire hand for dealer
+            while (dealerHandTotal <= 17) {
+                dealerHand.add(0, deck.dealTopCard());
+                cards.Card lastDealerCard = (cards.Card) dealerHand.get(0);          
+                dealerHandTotal += lastDealerCard.getValue().getNum();
+            }
+                        
+            // adjust dealer total for aces
+            for (Object j : dealerHand) {
+                cards.Card d = (cards.Card) j;
+                if (d.getValue().getAbbr().equals("A") && (dealerHandTotal + 10) <= 21) {
+                    dealerHandTotal += 10;
+                }
+            }
+            
+            session.setAttribute("dealerHandTotal", dealerHandTotal);
+            System.out.println("dealerHand: " + dealerHand);
+            System.out.println("Dealer stands with: " + dealerHandTotal);
         }
 
-//        cards x = new cards();
-//        cards.Deck y = x.new dealTopCard();
-        
-//        userHand.add(cards.Deck.dealTopCard());
-//        userHand.add(deck.dealTopCard());
-        
-        
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */

@@ -12,6 +12,10 @@
         <servlet-name>move</servlet-name>
         <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.move</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>state</servlet-name>
+        <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.state</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>blackjack</servlet-name>
         <url-pattern>/jack</url-pattern>
@@ -24,6 +28,10 @@
         <servlet-name>move</servlet-name>
         <url-pattern>/jack/move/hit</url-pattern>
         <url-pattern>/jack/move/stand</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>state</servlet-name>
+        <url-pattern>/jack/state</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
