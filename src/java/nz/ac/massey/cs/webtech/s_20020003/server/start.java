@@ -47,7 +47,8 @@ public class start extends HttpServlet {
         // initialise session variables
         ArrayList<Object> userHand = new ArrayList<>();
         ArrayList<Object> dealerHand = new ArrayList<>();
-        session.setAttribute("whoseTurn", 0);
+        session.setAttribute("whoseTurn", "user");
+        session.setAttribute("winner", "none");
         int userHandTotal = 0;
         int dealerHandTotal = 0;
         //String sessionId = session.getId();

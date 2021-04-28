@@ -38,6 +38,7 @@ public class move extends HttpServlet {
         if (session == null) {
             System.out.println("No game in progress.");
             response.setStatus(404);
+            response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
@@ -63,16 +64,17 @@ public class move extends HttpServlet {
         int dealerHandTotal = (int) session.getAttribute("dealerHandTotal");
         
         // check if dealer's turn
-        if (whoseTurn.equals(1)) {
+        if (whoseTurn.equals("computer")) {
             System.out.println("It is not the user's turn.");
             response.setStatus(400);
             return;
         }
         
         // check if user bust
-        if ((int)userHandTotal > 21) {
+        if (userHandTotal > 21) {
             System.out.println("User is bust.");
             response.setStatus(400);
+            response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
@@ -120,7 +122,7 @@ public class move extends HttpServlet {
             System.out.println("User stands with: " + userHandTotal);
             
             // change turn to dealer
-            session.setAttribute("whoseTurn", 1);
+            session.setAttribute("whoseTurn", "computer");
             
             // deal entire hand for dealer
             while (dealerHandTotal <= 17) {

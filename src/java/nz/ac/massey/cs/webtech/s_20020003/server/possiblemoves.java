@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Jay
  */
-public class state extends HttpServlet {
+public class possiblemoves extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,19 +31,6 @@ public class state extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet state</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet state at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -82,12 +69,38 @@ public class state extends HttpServlet {
             return;
         }
         
-        System.out.println("userHand: " + session.getAttribute("userHand"));
-        System.out.println("userHandTotal: " + session.getAttribute("userHandTotal"));
-        System.out.println("dealerHand: " + session.getAttribute("dealerHand"));
-        System.out.println("dealerHandTotal: " + session.getAttribute("dealerHandTotal"));
+        // check if game is over
+        if (session.getAttribute("whoseTurn") == "computer") {
+            response.setContentType("text/plain;charset=UTF-8");
+                try (PrintWriter out = response.getWriter()) {
+                    out.println("No moves available. Game is over.");
+                }
+            return;
+        }
         
-        processRequest(request, response);
+        // retrieve session variables
+        int userHandTotal = (int) session.getAttribute("userHandTotal");
+        int dealerHandTotal = (int) session.getAttribute("dealerHandTotal");
+        ArrayList<String> moves = new ArrayList<>();
+        
+        // construct possible moves list
+        if (moves.contains("stand")){
+        } else {
+            moves.add("stand");
+        }
+        if (moves.contains("hit")) {
+            moves.remove("hit");
+        }
+        if (userHandTotal < 21) {
+            moves.add("hit");
+        }
+        
+        response.setContentType("text/plain;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            out.println(moves);
+        }
+ 
+//        processRequest(request, response);
     }
 
     /**

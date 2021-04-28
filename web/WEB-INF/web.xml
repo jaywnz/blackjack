@@ -16,6 +16,18 @@
         <servlet-name>state</servlet-name>
         <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.state</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>won</servlet-name>
+        <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.won</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>possiblemoves</servlet-name>
+        <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.possiblemoves</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>stats</servlet-name>
+        <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.stats</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>blackjack</servlet-name>
         <url-pattern>/jack</url-pattern>
@@ -32,6 +44,18 @@
     <servlet-mapping>
         <servlet-name>state</servlet-name>
         <url-pattern>/jack/state</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>won</servlet-name>
+        <url-pattern>/jack/won</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>possiblemoves</servlet-name>
+        <url-pattern>/jack/possiblemoves</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>stats</servlet-name>
+        <url-pattern>/jack/stats</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
