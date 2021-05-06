@@ -56,20 +56,26 @@ public class won extends HttpServlet {
 
         // retrieve session variables
         Object whoseTurn = session.getAttribute("whoseTurn");
-        int userHandTotal = (int)session.getAttribute("userHandTotal");
-        int dealerHandTotal = (int)session.getAttribute("dealerHandTotal");
+        int userHandTotal = (int) session.getAttribute("userHandTotal");
+        int dealerHandTotal = (int) session.getAttribute("dealerHandTotal");
 
         // check if game is in play
         if (whoseTurn.equals("user")) {
             session.setAttribute("winner", "none");
-            System.out.println("Game is still in play.");
+            response.setContentType("text/plain;charset=UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.println(session.getAttribute("winner"));
+            }
             return;
-            // determine winner on computer's turn
         } else {
+            // determine winner on computer's turn
             while (session.getAttribute("winner").equals("none")) {
                 // dealer bust
                 if (dealerHandTotal > 21 && userHandTotal <= 21) {
                     session.setAttribute("winner", "user");
+                    // dealer and user bust
+                } else if (dealerHandTotal > 21 && userHandTotal > 21) {
+                    break;
                     // user bust
                 } else if (userHandTotal > 21 && dealerHandTotal <= 21) {
                     session.setAttribute("winner", "computer");
@@ -85,30 +91,29 @@ public class won extends HttpServlet {
                 }
             }
         }
-        
+
         // increment user games won
         if (session.getAttribute("winner").equals("user")) {
-            String wonStr = (String)session.getAttribute("userGamesWon");
+            String wonStr = (String) session.getAttribute("userGamesWon");
             if (wonStr == null) {
                 wonStr = "0";
             }
             int won = Integer.parseInt(wonStr);
-            session.setAttribute("userGamesWon", String.valueOf(won+1));
+            session.setAttribute("userGamesWon", String.valueOf(won + 1));
         }
-        
+
         // increment total games played
         // TODO stop incrementing upon repeat reloads
-        String totStr = (String)session.getAttribute("totalGames");
+        String totStr = (String) session.getAttribute("totalGames");
         if (totStr == null) {
             totStr = "0";
         }
         int tot = Integer.parseInt(totStr);
-        session.setAttribute("totalGames", String.valueOf(tot+1));
- 
+        session.setAttribute("totalGames", String.valueOf(tot + 1));
+
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             out.println(session.getAttribute("winner"));
-            out.println(session.getAttribute("userGamesWon"));
         }
     }
 

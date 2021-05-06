@@ -73,6 +73,9 @@ public class move extends HttpServlet {
         Object whoseTurn = session.getAttribute("whoseTurn");
         int userHandTotal = (int) session.getAttribute("userHandTotal");
         int dealerHandTotal = (int) session.getAttribute("dealerHandTotal");
+        
+        // check servlet path for move type
+        String servletPath = request.getServletPath();
 
         // check if dealer's turn
         if (whoseTurn.equals("computer")) {
@@ -81,29 +84,12 @@ public class move extends HttpServlet {
             return;
         }
 
-        // check if user bust
+        // check if user already bust, if so, force stand
         if (userHandTotal > 21) {
             System.out.println("User is bust.");
             response.setStatus(400);
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Blackjack</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>400 Bad Request</h1>");
-                out.println("<p>You are bust!</p>");
-                out.println("<a href='/assignment2_server_20020003/jack/start'>Start a new game</a>.");
-                out.println("</body>");
-                out.println("</html>");
-            }
-            return;
+            servletPath = "/jack/move/stand";
         }
-
-        // check servlet path for move type
-        String servletPath = request.getServletPath();
 
         // user chooses hit
         if ("/jack/move/hit".equals(servletPath)) {
