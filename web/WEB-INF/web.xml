@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
-        <servlet-name>blackjack</servlet-name>
-        <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.blackjack</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>start</servlet-name>
         <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.start</servlet-class>
     </servlet>
@@ -28,10 +24,10 @@
         <servlet-name>stats</servlet-name>
         <servlet-class>nz.ac.massey.cs.webtech.s_20020003.server.stats</servlet-class>
     </servlet>
-    <servlet-mapping>
+    <servlet>
         <servlet-name>blackjack</servlet-name>
-        <url-pattern>/jack</url-pattern>
-    </servlet-mapping>
+        <jsp-file>/blackjack.jsp</jsp-file>
+    </servlet>
     <servlet-mapping>
         <servlet-name>start</servlet-name>
         <url-pattern>/jack/start</url-pattern>
@@ -56,6 +52,10 @@
     <servlet-mapping>
         <servlet-name>stats</servlet-name>
         <url-pattern>/jack/stats</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>blackjack</servlet-name>
+        <url-pattern>/jack</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

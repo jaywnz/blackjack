@@ -104,6 +104,21 @@ public class move extends HttpServlet {
             userHandTotal += lastUserCard.getValue().getNum();
             System.out.println("Total: " + userHandTotal);
             session.setAttribute("userHandTotal", userHandTotal);
+            
+            response.setContentType("text/html;charset=UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Blackjack</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<span>userHand: </span>" + userHand);
+                out.println("<span>userHandTotal: </span>" + userHandTotal);
+                out.println("</body>");
+                out.println("</html>");
+            }
+            return;
         }
         
         // user chooses stand
@@ -142,20 +157,23 @@ public class move extends HttpServlet {
             session.setAttribute("dealerHandTotal", dealerHandTotal);
             System.out.println("dealerHand: " + dealerHand);
             System.out.println("Dealer stands with: " + dealerHandTotal);
-        }
-
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet move</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet move at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            
+            response.setContentType("text/html;charset=UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Blackjack</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<span>userHand: </span>" + userHand);
+                out.println("<span>userHandTotal: </span>" + userHandTotal);
+                out.println("<span>dealerHand: </span>" + dealerHand);
+                out.println("<span>userHandTotal: </span>" + dealerHandTotal);
+                out.println("</body>");
+                out.println("</html>");
+            }
+            return;
         }
     }
 
