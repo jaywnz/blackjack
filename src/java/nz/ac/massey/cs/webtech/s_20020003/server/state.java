@@ -1,18 +1,29 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2021 Jay
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nz.ac.massey.cs.webtech.s_20020003.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -31,18 +42,39 @@ public class state extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        // get existing session
+        HttpSession session = request.getSession(false);
+
+        if (session == null) {
+            response.setStatus(404);
+            response.setContentType("text/html;charset=UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Blackjack</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>404 Not Found</h1>");
+                out.println("<p>There is no currently active game.</p>");
+                out.println("<a href='/assignment2_server_20020003/jack/start'>Start a new game</a>.");
+                out.println("</body>");
+                out.println("</html>");
+            }
+            return;
+        }
+
+        // Construct JSON for display
+        JSONObject state = new JSONObject();
+
+        state.put("userHand", session.getAttribute("userHand").toString());
+        state.put("userHandTotal", session.getAttribute("userHandTotal"));
+        state.put("dealerHand", session.getAttribute("dealerHand").toString());
+        state.put("dealerHandTotal", session.getAttribute("dealerHandTotal"));
+
+        response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet state</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet state at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            out.println(state);
         }
     }
 
@@ -58,35 +90,6 @@ public class state extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // get existing session
-        HttpSession session = request.getSession(false);
-        
-        if (session == null) {
-            System.out.println("No game in progress.");
-            response.setStatus(404);
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Blackjack</title>");            
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>404 Not Found</h1>");
-                out.println("<p>There is no currently active game.</p>");
-                out.println("<a href='/assignment2_server_20020003/jack/start'>Start a new game</a>.");
-                out.println("</body>");
-                out.println("</html>");
-            }
-            return;
-        }
-        
-        System.out.println("userHand: " + session.getAttribute("userHand"));
-        System.out.println("userHandTotal: " + session.getAttribute("userHandTotal"));
-        System.out.println("dealerHand: " + session.getAttribute("dealerHand"));
-        System.out.println("dealerHandTotal: " + session.getAttribute("dealerHandTotal"));
-        
         processRequest(request, response);
     }
 

@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2021 Jay
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nz.ac.massey.cs.webtech.s_20020003.server;
 
@@ -31,10 +42,10 @@ public class move extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // get existing session
         HttpSession session = request.getSession(false);
-        
+
         if (session == null) {
             System.out.println("No game in progress.");
             response.setStatus(404);
@@ -43,7 +54,7 @@ public class move extends HttpServlet {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Blackjack</title>");            
+                out.println("<title>Blackjack</title>");
                 out.println("</head>");
                 out.println("<body>");
                 out.println("<h1>404 Not Found</h1>");
@@ -54,7 +65,7 @@ public class move extends HttpServlet {
             }
             return;
         }
-        
+
         // retrieve session variables
         ArrayList<Object> userHand = (ArrayList<Object>) session.getAttribute("userHand");
         ArrayList<Object> dealerHand = (ArrayList<Object>) session.getAttribute("dealerHand");
@@ -62,14 +73,14 @@ public class move extends HttpServlet {
         Object whoseTurn = session.getAttribute("whoseTurn");
         int userHandTotal = (int) session.getAttribute("userHandTotal");
         int dealerHandTotal = (int) session.getAttribute("dealerHandTotal");
-        
+
         // check if dealer's turn
         if (whoseTurn.equals("computer")) {
             System.out.println("It is not the user's turn.");
             response.setStatus(400);
             return;
         }
-        
+
         // check if user bust
         if (userHandTotal > 21) {
             System.out.println("User is bust.");
@@ -79,7 +90,7 @@ public class move extends HttpServlet {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Blackjack</title>");            
+                out.println("<title>Blackjack</title>");
                 out.println("</head>");
                 out.println("<body>");
                 out.println("<h1>400 Bad Request</h1>");
@@ -90,41 +101,40 @@ public class move extends HttpServlet {
             }
             return;
         }
-        
+
         // check servlet path for move type
         String servletPath = request.getServletPath();
-        
+
         // user chooses hit
         if ("/jack/move/hit".equals(servletPath)) {
             System.out.println("Hitting...");
             userHand.add(0, deck.dealTopCard());
             System.out.println("userHand: " + userHand);
             // add hit to user total
-            cards.Card lastUserCard = (cards.Card) userHand.get(0);          
+            cards.Card lastUserCard = (cards.Card) userHand.get(0);
             userHandTotal += lastUserCard.getValue().getNum();
             System.out.println("Total: " + userHandTotal);
             session.setAttribute("userHandTotal", userHandTotal);
-            
+
             response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Blackjack</title>");            
+                out.println("<title>Blackjack</title>");
                 out.println("</head>");
                 out.println("<body>");
                 out.println("<span>userHand: </span>" + userHand);
-                out.println("<span>userHandTotal: </span>" + userHandTotal);
                 out.println("</body>");
                 out.println("</html>");
             }
             return;
         }
-        
+
         // user chooses stand
         if ("/jack/move/stand".equals(servletPath)) {
             System.out.println("Standing...");
-            
+
             // adjust user total for aces
             for (Object i : userHand) {
                 cards.Card c = (cards.Card) i;
@@ -135,17 +145,17 @@ public class move extends HttpServlet {
             }
             session.setAttribute("userHandTotal", userHandTotal);
             System.out.println("User stands with: " + userHandTotal);
-            
+
             // change turn to dealer
             session.setAttribute("whoseTurn", "computer");
-            
+
             // deal entire hand for dealer
             while (dealerHandTotal <= 17) {
                 dealerHand.add(0, deck.dealTopCard());
-                cards.Card lastDealerCard = (cards.Card) dealerHand.get(0);          
+                cards.Card lastDealerCard = (cards.Card) dealerHand.get(0);
                 dealerHandTotal += lastDealerCard.getValue().getNum();
             }
-                        
+
             // adjust dealer total for aces
             for (Object j : dealerHand) {
                 cards.Card d = (cards.Card) j;
@@ -153,23 +163,23 @@ public class move extends HttpServlet {
                     dealerHandTotal += 10;
                 }
             }
-            
+
             session.setAttribute("dealerHandTotal", dealerHandTotal);
             System.out.println("dealerHand: " + dealerHand);
             System.out.println("Dealer stands with: " + dealerHandTotal);
-            
+
             response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Blackjack</title>");            
+                out.println("<title>Blackjack</title>");
                 out.println("</head>");
                 out.println("<body>");
                 out.println("<span>userHand: </span>" + userHand);
                 out.println("<span>userHandTotal: </span>" + userHandTotal);
                 out.println("<span>dealerHand: </span>" + dealerHand);
-                out.println("<span>userHandTotal: </span>" + dealerHandTotal);
+                out.println("<span>dealerHandTotal: </span>" + dealerHandTotal);
                 out.println("</body>");
                 out.println("</html>");
             }
