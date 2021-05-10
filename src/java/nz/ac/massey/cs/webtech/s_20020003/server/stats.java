@@ -65,17 +65,17 @@ public class stats extends HttpServlet {
 
         int totalGames = Integer.parseInt(t);
         int userGamesWon = Integer.parseInt(u);
-        double winPercentage = 0.0;
+        double winPercentage;
 
-        // FIXME -- not calculating stats correctly
         if (totalGames == 0) {
             response.setContentType("text/plain;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
                 out.println("No games played this session.");
+                return;
             }
-        } else {
-            winPercentage = Math.round((userGamesWon / totalGames) * 100);
         }
+
+        winPercentage = Math.round(((double) userGamesWon / (double) totalGames) * 100);
 
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -94,8 +94,8 @@ public class stats extends HttpServlet {
         String sessionId = (String) session.getId();
         stats.put(sessionId, data);
         System.out.println(stats);
-
-        // TODO - only records data of latest session
+        
+        // write stats to local file
         File f = new File("C:\\Users\\Jay\\Desktop\\stats.json");
         if (f.isFile()) {
             try (Reader reader = new FileReader("C:\\Users\\Jay\\Desktop\\stats.json")) {
@@ -103,7 +103,7 @@ public class stats extends HttpServlet {
                 JSONObject obj = (JSONObject) parser.parse(reader);
                 obj.putAll(stats);
                 try (FileWriter file = new FileWriter("C:\\Users\\Jay\\Desktop\\stats.json")) {
-                    file.write(stats.toJSONString());
+                    file.write(obj.toJSONString());
                     file.flush();
                     file.close();
                 }

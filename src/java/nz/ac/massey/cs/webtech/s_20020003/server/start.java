@@ -6,13 +6,11 @@
 package nz.ac.massey.cs.webtech.s_20020003.server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +18,7 @@ import java.util.ArrayList;
  * @author Jay
  */
 public class start extends HttpServlet {
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,14 +31,13 @@ public class start extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-                
+
         // create new session
         HttpSession session = request.getSession(true);
-        
+
         // construct and shuffle deck
-        
         cards.Deck deck = new cards.Deck();
-      
+
         deck.shuffle();
 //        System.out.println(deck);
 
@@ -52,47 +49,46 @@ public class start extends HttpServlet {
         int userHandTotal = 0;
         int dealerHandTotal = 0;
         //String sessionId = session.getId();
-        
+
         // deal 2 cards to user
         userHand.add(deck.dealTopCard());
         userHand.add(deck.dealTopCard());
         System.out.println("userHand: " + userHand);
         session.setAttribute("userHand", userHand);
-        
+
         // add user totals and record
         for (Object i : userHand) {
             cards.Card c = (cards.Card) i;
             userHandTotal += c.getValue().getNum();
         }
-        
+
         System.out.println("Total: " + userHandTotal);
         session.setAttribute("userHandTotal", userHandTotal);
-                
+
         // tests
 //        cards.Card current = (cards.Card)userHand.get(0);
 //        System.out.println(current);
 //        System.out.println(current.getValue());
 //        System.out.println(current.getSuit());
 //        System.out.println(current.getValue().getNum());
-
         // deal 2 cards to dealer ((1 face down))
         dealerHand.add(deck.dealTopCard());
         dealerHand.add(deck.dealTopCard());
         System.out.println("dealerHand: " + dealerHand);
         session.setAttribute("dealerHand", dealerHand);
-        
+
         // add dealer totals and record
         for (Object j : dealerHand) {
             cards.Card d = (cards.Card) j;
             dealerHandTotal += d.getValue().getNum();
         }
-        
+
         System.out.println("Total: " + dealerHandTotal);
         session.setAttribute("dealerHandTotal", dealerHandTotal);
-        
+
         session.setAttribute("deck", deck);
-        
-        // increment number of games played
+
+        response.sendRedirect("../blackjack.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
