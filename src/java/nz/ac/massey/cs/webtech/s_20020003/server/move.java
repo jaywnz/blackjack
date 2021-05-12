@@ -16,14 +16,19 @@
  */
 package nz.ac.massey.cs.webtech.s_20020003.server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 /**
  *
@@ -45,24 +50,11 @@ public class move extends HttpServlet {
 
         // get existing session
         HttpSession session = request.getSession(false);
+        String sessionId = session.getId();
 
-        if (session == null) {
+        if (session.getAttribute("userHand") == null) {
             System.out.println("No game in progress.");
             response.setStatus(404);
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Blackjack</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>404 Not Found</h1>");
-                out.println("<p>There is no currently active game.</p>");
-                out.println("<a href='/assignment2_server_20020003/jack/start'>Start a new game</a>.");
-                out.println("</body>");
-                out.println("</html>");
-            }
             return;
         }
 
@@ -73,7 +65,7 @@ public class move extends HttpServlet {
         Object whoseTurn = session.getAttribute("whoseTurn");
         int userHandTotal = (int) session.getAttribute("userHandTotal");
         int dealerHandTotal = (int) session.getAttribute("dealerHandTotal");
-        
+
         // check servlet path for move type
         String servletPath = request.getServletPath();
 
@@ -101,20 +93,6 @@ public class move extends HttpServlet {
             userHandTotal += lastUserCard.getValue().getNum();
             System.out.println("Total: " + userHandTotal);
             session.setAttribute("userHandTotal", userHandTotal);
-
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Blackjack</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<span>userHand: </span>" + userHand);
-                out.println("</body>");
-                out.println("</html>");
-            }
-            return;
         }
 
         // user chooses stand
@@ -154,23 +132,26 @@ public class move extends HttpServlet {
             System.out.println("dealerHand: " + dealerHand);
             System.out.println("Dealer stands with: " + dealerHandTotal);
 
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Blackjack</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<span>userHand: </span>" + userHand);
-                out.println("<span>userHandTotal: </span>" + userHandTotal);
-                out.println("<span>dealerHand: </span>" + dealerHand);
-                out.println("<span>dealerHandTotal: </span>" + dealerHandTotal);
-                out.println("</body>");
-                out.println("</html>");
-            }
-            return;
+            // call won servlet to calculate winner
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost post = new HttpPost("http://localhost:8080/assignment2_server_20020003/jack/won");
+            post.addHeader("Cookie", "JSESSIONID=" + sessionId);
+            client.execute(post);
         }
+        response.sendRedirect("../../blackjack.jsp");
+    }
+
+    // getResponseBody() Author: slal
+    private static String getResponseBody(final InputStream stream) throws UnsupportedOperationException, IOException {
+
+        StringBuilder builder = new StringBuilder();
+
+        BufferedReader rd = new BufferedReader(new InputStreamReader(stream));
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            builder.append(line);
+        }
+        return builder.toString();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

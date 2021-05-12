@@ -17,131 +17,192 @@
 
 "use strict";
 
-let userHand = document.getElementById("usercarddata").textContent;
-let dealerHand = document.getElementById("dealercarddata").textContent;
+const STATE_SERV = 'http://localhost:8080/assignment2_server_20020003/jack/state';
+const STATS_SERV = 'http://localhost:8080/assignment2_server_20020003/jack/stats';
+const POSMV_SERV = 'http://localhost:8080/assignment2_server_20020003/jack/possiblemoves';
+let state = null;
+initialiseState(STATE_SERV);
 
-document.getElementById("usercarddata").style.display = 'none';
-document.getElementById("dealercarddata").style.display = 'none';
+// retrieve game state from state servlet
+function initialiseState(URL) {
+    fetch(URL, {method: 'GET'})
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                state = data;
+                setCards(state);
+            });
+}
 
-console.log(userHand);
-console.log(dealerHand);
-
-let userCards = userHand.split(" ");
-let dealerCards = dealerHand.split(" ");
-
-console.log(userCards);
-console.log(dealerCards);
+// parse game state and display cards
+function setCards(state) {
+    let userCards = state.userHand.split(" ");
+    let dealerCards = state.dealerHand.split(" ");
 
 // set up user card suits and values for display
-for (let i = 0; i < userCards.length; i += 2) {
-    if (userCards[i].includes("SPADES")) {
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "spades";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = userCards[i + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("usercards").appendChild(cardSuit);
+    for (let i = 0; i < userCards.length; i += 2) {
+        if (userCards[i].includes("SPADES")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.className = "spades";
+            let valueSpan = document.createElement("span");
+            cardSuit.appendChild(valueSpan);
 
-        continue;
-    } else if (userCards[i].includes("CLUBS")) {
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "clubs";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = userCards[i + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("usercards").appendChild(cardSuit);
+            let cardValue = userCards[i + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("usercards").appendChild(cardSuit);
 
-        continue;
-    } else if (userCards[i].includes("DIAMONDS")) {
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "diamonds";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = userCards[i + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("usercards").appendChild(cardSuit);
+            continue;
+        } else if (userCards[i].includes("CLUBS")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.className = "clubs";
+            let valueSpan = document.createElement("span");
+            cardSuit.appendChild(valueSpan);
 
-        continue;
-    } else if (userCards[i].includes("HEARTS")){
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "hearts";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = userCards[i + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("usercards").appendChild(cardSuit);
+            let cardValue = userCards[i + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("usercards").appendChild(cardSuit);
 
-        continue;
+            continue;
+        } else if (userCards[i].includes("DIAMONDS")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.className = "diamonds";
+            let valueSpan = document.createElement("span");
+            cardSuit.appendChild(valueSpan);
+
+            let cardValue = userCards[i + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("usercards").appendChild(cardSuit);
+
+            continue;
+        } else if (userCards[i].includes("HEARTS")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.className = "hearts";
+            let valueSpan = document.createElement("span");
+            cardSuit.appendChild(valueSpan);
+
+            let cardValue = userCards[i + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("usercards").appendChild(cardSuit);
+
+            continue;
+        }
     }
-}
 
 // set up dealer card suits for display
-for (let j = 0; j < dealerCards.length; j += 2) {
-    if (dealerCards[j].includes("SPADES")) {
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "spades";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = dealerCards[j + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("dealercards").appendChild(cardSuit);
-        
-        continue;
-    } else if (dealerCards[j].includes("CLUBS")) {
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "clubs";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = dealerCards[j + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("dealercards").appendChild(cardSuit);
-        
-        continue;
-    } else if (dealerCards[j].includes("DIAMONDS")) {
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "diamonds";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = dealerCards[j + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("dealercards").appendChild(cardSuit);
-        
-        continue;
-    } else if (dealerCards[j].includes("HEARTS")){
-        let cardSuit = document.createElement("div");
-        cardSuit.className = "hearts";
-        let valueSpan = document.createElement("span");
-        cardSuit.appendChild(valueSpan);
-        
-        let cardValue = dealerCards[j + 1];
-        let num = cardValue.split("=");
-        num = num[1].slice(0, -2);
-        valueSpan.innerHTML = num;
-        document.getElementById("dealercards").appendChild(cardSuit);
-        
-        continue;
+    for (let j = 0; j < dealerCards.length; j += 2) {
+        if (dealerCards[j].includes("SPADES")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.classList.add("spades");
+            let valueSpan = document.createElement("span");
+            if (j === dealerCards.length - 1 || j === dealerCards.length - 2) {
+                valueSpan.setAttribute("id", "hide");
+            }
+            cardSuit.appendChild(valueSpan);
+
+            let cardValue = dealerCards[j + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("dealercards").appendChild(cardSuit);
+
+            continue;
+        } else if (dealerCards[j].includes("CLUBS")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.classList.add("clubs");
+            let valueSpan = document.createElement("span");
+            if (j === dealerCards.length - 1 || j === dealerCards.length - 2) {
+                valueSpan.setAttribute("id", "hide");
+            }
+            cardSuit.appendChild(valueSpan);
+
+            let cardValue = dealerCards[j + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("dealercards").appendChild(cardSuit);
+
+            continue;
+        } else if (dealerCards[j].includes("DIAMONDS")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.classList.add("diamonds");
+            let valueSpan = document.createElement("span");
+            if (j === dealerCards.length - 1 || j === dealerCards.length - 2) {
+                valueSpan.setAttribute("id", "hide");
+            }
+            cardSuit.appendChild(valueSpan);
+
+            let cardValue = dealerCards[j + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("dealercards").appendChild(cardSuit);
+
+            continue;
+        } else if (dealerCards[j].includes("HEARTS")) {
+            let cardSuit = document.createElement("div");
+            cardSuit.classList.add("hearts");
+            let valueSpan = document.createElement("span");
+            if (j === dealerCards.length - 1 || j === dealerCards.length - 2) {
+                valueSpan.setAttribute("id", "hide");
+            }
+            cardSuit.appendChild(valueSpan);
+
+            let cardValue = dealerCards[j + 1];
+            let num = cardValue.split("=");
+            num = num[1].slice(0, -2);
+            valueSpan.innerHTML = num;
+            document.getElementById("dealercards").appendChild(cardSuit);
+
+            continue;
+        }
     }
 }
+
+// retrieve game statistics from stats servlet
+function getStats(URL) {
+    let stats = document.getElementById("stats");
+    fetch(URL, {method: 'GET'})
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (string) {
+                stats.innerHTML = string;
+            });
+}
+
+// request moves available to user
+//function possMoves(URL) {
+//    fetch(URL, {method: 'GET'})
+//            .then(function (response) {
+//                return response.text();
+//            })
+//            .then(function (data) {
+//                reveal = data;
+//                setCards(reveal);
+//            });
+//                if (string.includes("hit")) {
+//                    console.log(string);
+//                    console.log("returning false");
+//                    return false;
+//                } else {
+//                    console.log(string);
+//                    console.log("returning true");
+//                    return true;
+//                }
+//            });
+
+
+//    let gameEnd = document.getElementById("winner");
+//    if (gameEnd.textContent !== ""){
+//        initialiseState(STATE_SERV, false);
+//        
+//    }

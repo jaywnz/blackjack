@@ -1,0 +1,91 @@
+/* Main stylesheet for Blackjack
+Author: Jay */
+body {
+    width: 50%;
+}
+
+body > p {
+    margin: 20px 0;
+    text-transform: capitalize;
+}
+
+h4 {
+    margin-bottom: 15px;
+}
+
+#usercards {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: left;
+    background-color: #001C69;
+    padding: 20px;
+    border-radius: 5px;
+    border: 6px double #FFF;
+    min-width: 110px;
+    min-height: 150px;
+    margin-bottom: 20px;
+}
+
+#dealercards {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: left;
+    background-color: #82172B;
+    padding: 20px;
+    border-radius: 5px;
+    border: 6px double #FFF;
+    min-width: 110px;
+    min-height: 150px;
+}
+
+
+#usercards > div, #dealercards > div {
+    min-width: 100px;
+    height: 135px;
+    margin: 3px;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    display: table;
+    background-color: white;
+}
+
+
+div > span {
+    font-size: 20px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+
+
+.hearts span::after, .hearts span::before  {
+    content: "\2665";
+}
+
+.diamonds span::after, .diamonds span::before {
+    content: "\2666";
+}
+
+.spades span::after, .spades span::before {
+    content: "\2660";
+}
+
+.clubs span::after, .clubs span::before {
+    content: "\2663";
+}
+
+#winner {
+    color: red;
+    text-transform: uppercase;
+}
+
+form {
+    display: inline;
+}
+
+#hide {
+    visibility: hidden;
+}

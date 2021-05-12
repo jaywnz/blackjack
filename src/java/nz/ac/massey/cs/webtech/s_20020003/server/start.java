@@ -48,7 +48,6 @@ public class start extends HttpServlet {
         session.setAttribute("winner", "none");
         int userHandTotal = 0;
         int dealerHandTotal = 0;
-        //String sessionId = session.getId();
 
         // deal 2 cards to user
         userHand.add(deck.dealTopCard());
@@ -65,13 +64,7 @@ public class start extends HttpServlet {
         System.out.println("Total: " + userHandTotal);
         session.setAttribute("userHandTotal", userHandTotal);
 
-        // tests
-//        cards.Card current = (cards.Card)userHand.get(0);
-//        System.out.println(current);
-//        System.out.println(current.getValue());
-//        System.out.println(current.getSuit());
-//        System.out.println(current.getValue().getNum());
-        // deal 2 cards to dealer ((1 face down))
+        // deal 2 cards to dealer
         dealerHand.add(deck.dealTopCard());
         dealerHand.add(deck.dealTopCard());
         System.out.println("dealerHand: " + dealerHand);

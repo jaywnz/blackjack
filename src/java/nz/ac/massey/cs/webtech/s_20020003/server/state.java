@@ -47,25 +47,18 @@ public class state extends HttpServlet {
 
         if (session == null) {
             response.setStatus(404);
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Blackjack</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>404 Not Found</h1>");
-                out.println("<p>There is no currently active game.</p>");
-                out.println("<a href='/assignment2_server_20020003/jack/start'>Start a new game</a>.");
-                out.println("</body>");
-                out.println("</html>");
-            }
             return;
         }
 
-        // Construct JSON for display
+        // construct JSON for display
         JSONObject state = new JSONObject();
+
+        // check for existing session but no game started
+        if (session.getAttribute("userHand") == null) {
+            response.setStatus(404);
+            response.sendRedirect("../blackjack.jsp");
+            return;
+        }
 
         state.put("userHand", session.getAttribute("userHand").toString());
         state.put("userHandTotal", session.getAttribute("userHandTotal"));
