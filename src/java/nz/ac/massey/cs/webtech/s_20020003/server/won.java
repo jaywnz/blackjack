@@ -103,7 +103,6 @@ public class won extends HttpServlet {
         }
 
         // increment total games played
-        // TODO stop incrementing upon repeat reloads
         String totStr = (String) session.getAttribute("totalGames");
         if (totStr == null) {
             totStr = "0";

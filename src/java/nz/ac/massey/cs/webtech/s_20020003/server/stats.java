@@ -94,7 +94,7 @@ public class stats extends HttpServlet {
         String sessionId = (String) session.getId();
         stats.put(sessionId, data);
         System.out.println(stats);
-        
+
         // write stats to local file
         File f = new File("C:\\Users\\Jay\\Desktop\\stats.json");
         if (f.isFile()) {

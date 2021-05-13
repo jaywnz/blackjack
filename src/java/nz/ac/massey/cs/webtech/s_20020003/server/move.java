@@ -134,6 +134,7 @@ public class move extends HttpServlet {
 
             // call won servlet to calculate winner
             CloseableHttpClient client = HttpClients.createDefault();
+//            HttpPost post = new HttpPost("https://blackjack-159352.herokuapp.com/assignment2_server_20020003/jack/won");
             HttpPost post = new HttpPost("http://localhost:8080/assignment2_server_20020003/jack/won");
             post.addHeader("Cookie", "JSESSIONID=" + sessionId);
             client.execute(post);

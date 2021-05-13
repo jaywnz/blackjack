@@ -37,9 +37,7 @@ public class start extends HttpServlet {
 
         // construct and shuffle deck
         cards.Deck deck = new cards.Deck();
-
         deck.shuffle();
-//        System.out.println(deck);
 
         // initialise session variables
         ArrayList<Object> userHand = new ArrayList<>();
